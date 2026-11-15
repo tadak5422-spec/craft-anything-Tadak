@@ -1,0 +1,15 @@
+[package]
+name = "craft-anything-android-ffi"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[lib]
+name = "craft_anything_android"
+crate-type = ["cdylib"]
+
+[dependencies]
+craft-anything-engine = { path = "../engine" }
+jni = "0.21.1"
+serde_json = { workspace = true }
