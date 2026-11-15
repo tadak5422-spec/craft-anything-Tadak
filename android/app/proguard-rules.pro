@@ -1,0 +1,1 @@
+# Craft Anything ProGuard rules

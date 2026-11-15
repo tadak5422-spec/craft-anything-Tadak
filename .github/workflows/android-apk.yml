@@ -1,0 +1,46 @@
+name: Build Android Debug APK
+
+on:
+  push:
+    branches:
+      - android-dev
+    paths:
+      - "android/**"
+      - ".github/workflows/android-apk.yml"
+  workflow_dispatch:
+
+jobs:
+  build-debug-apk:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Setup Gradle 8.14
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.14"
+
+      - name: Accept Android SDK licenses
+        run: |
+          if [ -d "$ANDROID_HOME/cmdline-tools/latest/bin" ]; then
+            yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null 2>&1 || true
+          fi
+
+      - name: Build Debug APK
+        working-directory: android
+        run: gradle assembleDebug --no-daemon
+
+      - name: Upload Debug APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: craft-anything-debug-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
